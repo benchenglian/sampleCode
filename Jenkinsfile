@@ -1,0 +1,65 @@
+pipeline {
+  agent none
+  stages {
+    stage('Preparation') {
+      parallel {
+        stage('Preparation') {
+          agent {
+            node {
+              label 'master'
+            }
+            
+          }
+          steps {
+            git 'https://github.com/benchenglian/sampleCode.git'
+          }
+        }
+        stage('second') {
+          agent any
+          steps {
+            sh 'echo preparation2'
+          }
+        }
+      }
+    }
+    stage('build') {
+      parallel {
+        stage('build') {
+          agent any
+          steps {
+            sh 'pwd'
+            echo 'abc'
+          }
+        }
+        stage('build2') {
+          steps {
+            sh 'echo "this is build2"'
+          }
+        }
+      }
+    }
+    stage('Test') {
+      parallel {
+        stage('node 1') {
+          agent any
+          steps {
+            sh 'pwd'
+            sh 'sleep 20s'
+            sh 'echo hstream1'
+          }
+        }
+        stage('node 2') {
+          agent {
+            label 'master'
+          }
+          steps {
+            sh 'pwd'
+            sh 'sleep 20s'
+            sh 'echo hello2'
+            sh 'python ./test/test.py'
+          }
+        }
+      }
+    }
+  }
+}
