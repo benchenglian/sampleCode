@@ -32,6 +32,7 @@ pipeline {
           }
         }
         stage('build2') {
+          agent any
           steps {
             sh 'echo "this is build2"'
           }
